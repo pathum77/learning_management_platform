@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ./learning_management_be
+      dockerfile: Dockerfile
+    container_name: learning-platform-api
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./learning_management_be:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    networks:
+      - learning-network
+
+  db:
+    image: mysql:8.0.34
+    container_name: learning-platform-db
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+      MYSQL_DATABASE: learning_plat
+      MYSQL_USER: learning_plat_user
+      MYSQL_PASSWORD: learningpass@123
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/myseql/data
+    networks:
+      - learning-network
+
+volumes:
+  mysql_data:
+
+networks:
+  learning-network:
