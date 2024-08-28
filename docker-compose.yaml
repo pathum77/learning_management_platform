@@ -29,6 +29,22 @@ services:
     networks:
       - learning-network
 
+  
+  frontend:
+    build:
+      context: ./learning_management_fe
+      dockerfile: Dockerfile
+    container_name: learning-platform-frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./learning_management_fe:/app
+      - /app/node_modules
+    networks:
+      - learning-network
+    depends_on:
+      - api
+
 volumes:
   mysql_data:
 

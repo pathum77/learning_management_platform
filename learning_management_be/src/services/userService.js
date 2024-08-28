@@ -46,9 +46,12 @@ class UserService {
         return user;
     }
 
-    async enrollForCourse(userId, courseId) {
+    async enrollForCourse(userId, courseId) {        
         const [course] = await this.userModel.getCourseById(courseId);
         const [user] = await this.userModel.getUserDataById(userId);
+
+        // console.log(course, user);
+        
 
         if (course.length === 0 || user.length === 0 || course.length === 0 && user.length === 0) {
             return { error: 'Course or user not found' };

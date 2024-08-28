@@ -17,8 +17,8 @@ class UserModel {
         return result.insertId;
     }
     
-    async getCourseById(id) {
-        const query = 'SELECT id, name, lesson_count, img, status FROM course WHERE id = ?';
+    async getCourseById(id) {        
+        const query = 'SELECT id, name, lesson_count, img, status FROM course WHERE id = ? AND status = 1';
         return await db.execute(query, [id]);
     }
     

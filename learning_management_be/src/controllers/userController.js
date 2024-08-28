@@ -57,7 +57,7 @@ exports.getUserData = async (req, res) => {
 exports.enrollCourse = async (req, res) => {
     try {
         const { courseId } = req.body;
-        const id = req.user.userId;
+        const id = req.user.userId;        
 
         const result = await userService.enrollForCourse(id, courseId);
 
