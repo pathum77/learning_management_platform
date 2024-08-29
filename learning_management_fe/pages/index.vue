@@ -15,6 +15,7 @@
         </div>
         <div class="container">
             <Title title="Our Latest Courses" />
+            <p v-if="!latestCoursesIsLoading && courses.length === 0" class="my-[100px] text-center text-lg">There are no courses available right now</p>
             <div v-if="latestCoursesIsLoading && courses.length === 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 <div v-for="item in 6" :key="item">
                     <SkeletonCardCourse />

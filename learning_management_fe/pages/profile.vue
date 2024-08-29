@@ -3,6 +3,7 @@
         <UNotifications />
         <div class="container pt-[100px]">
             <Title title="Enrolled Courses" />
+            <p v-if="!coursesLoading && courses.length === 0" class="my-[100px] text-center text-lg">You have not enrolled in any courses</p>
             <div v-if="coursesLoading && courses.length === 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 <div v-for="item in 12" :key="item">
                     <SkeletonCardCourse />

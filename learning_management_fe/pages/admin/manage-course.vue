@@ -2,10 +2,12 @@
     <div>
         <UNotifications />
         <LoadingSpinner :is-loading="isLoading" />
-        <CoursesEditPopup v-if="isCourseEditPopupVisible" :course="selectedCourse" @courseEditPopupClose="courseEditPopupClose"/>
-        <TitleSm title="Manage Courses"/>
+        <CoursesEditPopup v-if="isCourseEditPopupVisible" :course="selectedCourse"
+            @courseEditPopupClose="courseEditPopupClose" />
+        <TitleSm title="Manage Courses" />
         <div>
-            <div v-for="(course, index) in courses" :key="index" class="p-2 flex flex-col md:flex-row justify-between gap-5 border-b">
+            <div v-for="(course, index) in courses" :key="index"
+                class="p-2 flex flex-col md:flex-row justify-between gap-5 border-b">
                 <div class="flex flex-col sm:flex-row gap-5">
                     <div class="w-full sm:w-[200px] h-[300px] sm:h-[150px] flex-shrink-0 bg-red-200 relative">
                         <NuxtImg class="w-full h-full absolute object-cover" :src="course.img" loading="lazy" />
@@ -16,7 +18,8 @@
                     </div>
                 </div>
                 <div class="flex justify-end gap-3">
-                    <button @click="courseEditPopupOpen(course)" class="w-7 h-7 rounded-md grid place-items-center bg-orange-300">
+                    <button @click="courseEditPopupOpen(course)"
+                        class="w-7 h-7 rounded-md grid place-items-center bg-orange-300">
                         <UIcon class="w-5 h-5 text-white" name="ic:baseline-edit" dynamic />
                     </button>
                     <button @click="deleteACourse(course.id)" class="w-7 h-7 rounded-md grid place-items-center bg-red-600">
@@ -40,6 +43,7 @@ definePageMeta({
 });
 
 const toast = useToast();
+const router = useRouter();
 
 const isLoading = ref(false);
 const courses = ref([]);
@@ -54,7 +58,7 @@ const getCoursesData = async () => {
     isLoading.value = true;
     try {
         const response = await getCourses();
-        courses.value = response.data;        
+        courses.value = response.data;
     } catch (error) {
         toast.add({
             title: error.response.data.title,
@@ -62,6 +66,10 @@ const getCoursesData = async () => {
             icon: 'i-heroicons-exclamation-circle-solid',
             color: 'red',
         });
+
+        if (error.response.status === 401) {
+            router.push('/admin/login');
+        }
     }
     isLoading.value = false;
 };
@@ -74,7 +82,7 @@ const courseEditPopupOpen = (course) => {
 const courseEditPopupClose = (val) => {
     isCourseEditPopupVisible.value = false;
 
-    if(val) {
+    if (val) {
         getCoursesData();
         toast.add({
             title: val.title,

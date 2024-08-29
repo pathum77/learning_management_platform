@@ -13,9 +13,10 @@
                     <div class="mb-5">
                         <p>Image</p>
                         <label for="img"
-                            class="w-[300px] h-[200px] border rounded-md cursor-pointer flex justify-center items-center overflow-hidden relative bg-white" :class="errors.imgURL ? 'border-red-600' : ''">
-                            <UIcon v-if="!imgURL" class="w-10 h-10 text-gray-400"  name="material-symbols:add-a-photo-outline-rounded"
-                                dynamic />
+                            class="w-[300px] h-[200px] border rounded-md cursor-pointer flex justify-center items-center overflow-hidden relative bg-white"
+                            :class="errors.imgURL ? 'border-red-600' : ''">
+                            <UIcon v-if="!imgURL" class="w-10 h-10 text-gray-400"
+                                name="material-symbols:add-a-photo-outline-rounded" dynamic />
                             <img v-else class="w-full h-full absolute object-cover" :src="imgURL" alt="">
                             <input class="w-0 opacity-0" type="file" name="" id="img" accept=".jpg, .jpeg, .png, .webp"
                                 @change="imgUpload()" ref="img">
@@ -24,7 +25,8 @@
                     </div>
                     <div class="mb-5">
                         <p>Description</p>
-                        <textarea class="w-full p-2 border rounded-sm" :class="errors.description ? 'border-red-600' : ''" v-model="description" name="" id="" rows="5" placeholder="Enter the description"></textarea>
+                        <textarea class="w-full p-2 border rounded-sm" :class="errors.description ? 'border-red-600' : ''"
+                            v-model="description" name="" id="" rows="5" placeholder="Enter the description"></textarea>
                         <p v-if="errors.description" class="text-red-600 text-sm">{{ errors.description }}</p>
                     </div>
                     <BtnTextLg class="mx-auto" text="Add" @btn-click="add()" />
@@ -46,6 +48,7 @@ definePageMeta({
 });
 
 const toast = useToast();
+const router = useRouter();
 
 const isLoading = ref(false);
 const name = ref('');
@@ -77,29 +80,29 @@ const imgUpload = () => {
 };
 
 const add = async () => {
-    if(!name.value) {
+    if (!name.value) {
         errors.value.name = 'Course title is required';
     } else {
         errors.value.name = '';
     }
 
-    if(!lessonCount.value) {
+    if (!lessonCount.value) {
         errors.value.lessonCount = 'Course lesson count is required';
     } else if (lessonCount.value < 1) {
         errors.value.lessonCount = 'Course lesson count must be greater than 0';
     }
-    
+
     else {
         errors.value.lessonCount = '';
     }
 
-    if(!description.value) {
+    if (!description.value) {
         errors.value.description = 'Course description is required';
     } else {
         errors.value.description = '';
     }
 
-    if(!imgFile.value) {
+    if (!imgFile.value) {
         errors.value.imgURL = 'Course image is required';
     } else {
         errors.value.imgURL = '';
@@ -107,7 +110,7 @@ const add = async () => {
 
     isLoading.value = true;
     try {
-        if(errors.value.name === '' && errors.value.lessonCount === '' && errors.value.description === '' && errors.value.imgURL === '') {
+        if (errors.value.name === '' && errors.value.lessonCount === '' && errors.value.description === '' && errors.value.imgURL === '') {
             const formData = new FormData();
             formData.append('name', name.value);
             formData.append('lesson_count', lessonCount.value);
@@ -141,6 +144,10 @@ const add = async () => {
             icon: 'i-heroicons-exclamation-circle-solid',
             color: 'red',
         });
+
+        if (error.response.status === 401) {
+            router.push('/admin/login');
+        }
     }
     isLoading.value = false;
 };

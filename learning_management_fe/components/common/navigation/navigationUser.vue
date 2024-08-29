@@ -13,9 +13,16 @@
                     <nuxt-link to="/courses">Courses</nuxt-link>
                     <nuxt-link v-if="isUserLoggedIn === false" to="/register">Join</nuxt-link>
                     <nuxt-link v-if="isUserLoggedIn === false" to="/login">Sign in</nuxt-link>
-                    <nuxt-link v-if="isUserLoggedIn === true" to="/profile" class="rounded-full">
-                        <UIcon class="text-[35px] text-prim" name="material-symbols:account-circle" dynamic />
-                    </nuxt-link>
+                    <UDropdown v-if="isUserLoggedIn === true" :items="profileBtnItems" :ui="{ item: { disabled: 'cursor-text select-text' } }"
+                        :popper="{ placement: 'bottom-start' }">
+                        <button class="w-10 h-10 flex justify-center items-center rounded-full bg-prim relative">
+                            <UIcon class="w-7 h-7 text-fg-light" name="material-symbols:person" dynamic />
+                        </button>
+                        <template #item="{ item }">
+                            <span class="truncate">{{ item.label }}</span>
+                            <UIcon class="ms-auto text-[20px] text-red-600" :name="item.icon" dynamic />
+                        </template>
+                    </UDropdown>
                 </div>
             </div>
         </div>
@@ -25,8 +32,29 @@
 <script setup>
 import { useAuthStore } from '~/store/index.js';
 
+const router = useRouter();
+
 const isNavigationVisible = ref(true);
 let lastScrollTop = ref(0);
+
+const profileBtnItems = [
+    [{
+        label: 'Profile',
+        icon: 'ri:user-line',
+        click: () => {
+            router.push('/profile');
+        },
+    },
+    {
+        label: 'Logout',
+        icon: 'ri:logout-circle-line',
+        click: () => {
+            useAuthStore().logout();
+            router.push('/login');
+        },
+    }
+]
+];
 
 const isUserLoggedIn = computed(() => {
     if (process.client) {
@@ -57,7 +85,6 @@ const handleScroll = () => {
 </script>
 
 <style scoped>
-
 a:hover {
     color: #FCCE90;
 }

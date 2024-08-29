@@ -30,10 +30,9 @@
 </template>
 
 <script setup>
-// import { useAuthStore } from '~/store/index.js';
 import leftNavigationLinksAdmin from './leftNavigationLinksAdmin.vue';
+import { useAuthStore } from '~/store/index.js';
 
-// const authStore = process.client ? useAuthStore() : null;
 const router = useRouter();
 
 const profileBtnItems = [
@@ -41,21 +40,12 @@ const profileBtnItems = [
         label: 'Logout',
         icon: 'ri:logout-circle-line',
         click: () => {
-            logout();
+            useAuthStore().logout();
+            router.push('/admin/login');
         },
     }]
 ];
 const isMobileNavigationOpen = ref(false);
-
-const logout = () => {
-    loaderTrigger(true);
-
-    authStore.logout();
-    setTimeout(() => {
-        loaderTrigger(false);
-        router.push('/admin/login');
-    }, 1000);
-}
 
 const mobileNavigationHideShowTrigger = () => {
     isMobileNavigationOpen.value = !isMobileNavigationOpen.value;

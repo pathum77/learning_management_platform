@@ -5,7 +5,8 @@
         <div>
             <TitleSm title="Manage Students" />
             <div>
-                <table class="min-w-[700px] w-full">
+                <p v-if="isLoading === false && users.length === 0" class="my-[100px] text-center">No Students Found</p>
+                <table v-else class="min-w-[700px] w-full">
                     <tr>
                         <th class="px-2 py-4 text-center bg-white">Student ID</th>
                         <th class="px-2 py-4 text-center bg-white">First Name</th>
@@ -19,9 +20,9 @@
                         <td class="px-2 py-3 text-sm text-center">{{ user.last_name }}</td>
                         <td class="px-2 py-3 flex justify-center">
                             <button @click="deleteAUser(user.id)"
-                            class="w-7 h-7 rounded-md grid place-items-center bg-red-600">
-                            <UIcon class="w-5 h-5 text-white" name="ic:baseline-delete" dynamic />
-                        </button>
+                                class="w-7 h-7 rounded-md grid place-items-center bg-red-600">
+                                <UIcon class="w-5 h-5 text-white" name="ic:baseline-delete" dynamic />
+                            </button>
                         </td>
                     </tr>
                 </table>
@@ -41,8 +42,9 @@ definePageMeta({
 });
 
 const toast = useToast();
+const router = useRouter();
 
-const isLoading = ref(false);
+const isLoading = ref(true);
 const users = ref([]);
 
 onMounted(() => {
@@ -61,6 +63,10 @@ const getAllUsers = async () => {
             icon: 'i-heroicons-exclamation-circle-solid',
             color: 'red',
         });
+
+        if (error.response.status === 401) {
+            router.push('/admin/login');
+        }
     }
     isLoading.value = false;
 }
@@ -85,7 +91,7 @@ const deleteAUser = (id) => {
                     color: 'green',
                 });
                 isLoading.value = false;
-                getAllUsers();            
+                getAllUsers();
             } catch (error) {
                 toast.add({
                     title: error.response.data.title,
