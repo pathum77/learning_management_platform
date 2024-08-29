@@ -7,10 +7,11 @@ const { setupMulter } = require('../utils/multer');
 
 const imgUpload = setupMulter('public/uploads/courses');
 
-router.get('/get-courses', courseController.getAllCourses);
+router.get('/get-courses', auth.verifyJWT, courseController.getAllCourses);
 router.get('/get-course/:id', courseController.getCourse);
+router.get('/get-latest-courses', courseController.getLatestCourses);
 router.post('/add-course', auth.verifyJWT, auth.checkRole(['admin']), imgUpload.single('img'), courseValidation.validateCourseRegistration, courseController.addCourse);
 router.post('/update-course', auth.verifyJWT, auth.checkRole(['admin']), imgUpload.single('img'), courseController.updateCourse);
-router.post('/delete-course/:id', auth.verifyJWT, auth.checkRole(['admin']), courseController.deleteCourse);
+router.delete('/delete-course/:id', auth.verifyJWT, auth.checkRole(['admin']), courseController.deleteCourse);
 
 module.exports = router;

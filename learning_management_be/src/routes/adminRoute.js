@@ -6,7 +6,7 @@ const auth = require('../middlewares/auth');
 
 router.post('/login', adminValidation.validateAdminLogin, adminController.login);
 router.get('/get-all-users', auth.verifyJWT, auth.checkRole(['admin']), adminController.getAllUsers);
-router.patch('/delete-user/:id', auth.verifyJWT, auth.checkRole(['admin']), adminController.deleteUser);
+router.delete('/delete-user/:id', auth.verifyJWT, auth.checkRole(['admin']), adminController.deleteUser);
 router.post('/enroll-user', auth.verifyJWT, auth.checkRole(['admin']), adminValidation.validateUserAndCourseEnrollment, adminController.enrollUserForCourse);
 router.post('/withdraw-user', auth.verifyJWT, auth.checkRole(['admin']), adminValidation.validateUserAndCourseEnrollment, adminController.withdrawUserFromCourse);
 

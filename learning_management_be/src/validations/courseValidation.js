@@ -4,8 +4,7 @@ exports.validateCourseRegistration = [
     body('name')
         .notEmpty().withMessage('Course name cannot be empty!'),
     body('lesson_count')
-        .notEmpty().withMessage('Lesson count cannot be empty!')
-        .isInt({ min: 1 }).withMessage('Course count must be a valid number!'),
+        .notEmpty().withMessage('Lesson count cannot be empty!'),
     body('description')
         .notEmpty().withMessage('Description cannot be empty!'),
 

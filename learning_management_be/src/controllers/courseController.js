@@ -5,7 +5,9 @@ const courseService = new CourseService(courseModel);
 
 exports.getAllCourses = async (req, res) => {
     try {
-        const courses = await courseService.getAllCourses();
+        const userId = req.user.userId;
+        
+        const courses = await courseService.getAllCourses(userId);
 
         return res.status(200).json(courses);
     } catch (error) {
@@ -24,6 +26,15 @@ exports.getCourse = async (req, res) => {
         } else {
             return res.status(200).json(course);
         }
+    } catch (error) {
+        return res.status(500).json({ title: 'Error!', message: error.message });
+    }
+};
+
+exports.getLatestCourses = async (req, res) => {
+    try {
+        const courses = await courseService.getLatestCourses(req.query.userId);
+        return res.status(200).json(courses);
     } catch (error) {
         return res.status(500).json({ title: 'Error!', message: error.message });
     }

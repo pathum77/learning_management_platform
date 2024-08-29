@@ -11,6 +11,8 @@ const adminRoute = require('./routes/adminRoute');
 
 const app = express();
 
+app.use('/public', express.static('public'));
+
 // Middlewares
 app.use(helmet());
 app.use(express.json());

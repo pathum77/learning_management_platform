@@ -12,14 +12,24 @@ class CourseModel {
         return await db.execute(query, [name]);
     }
 
-    async addCourse(name, lesson_count, img, description) {
-        const query = 'INSERT INTO course (name, lesson_count, img, description) VALUES (?, ?, ?, ?)';
-        return await db.execute(query, [name, lesson_count, img, description]);
-    }
-
     async getCourseById(id) {
         const query = 'SELECT id, name, lesson_count, img, description, status FROM course WHERE id = ? AND status = 1';
         return await db.execute(query, [id]);
+    }
+
+    async getLatestCourses() {
+        const query = 'SELECT id, name, lesson_count, img, description FROM course WHERE status = 1 ORDER BY created_at DESC LIMIT 6';
+        return await db.execute(query);
+    };
+
+    async getCourseByUserEnrolled(id) {
+        const query = 'SELECT course_id FROM enrollment WHERE user_id = ?';
+        return await db.execute(query, [id]);
+    }
+
+    async addCourse(name, lesson_count, img, description) {
+        const query = 'INSERT INTO course (name, lesson_count, img, description) VALUES (?, ?, ?, ?)';
+        return await db.execute(query, [name, lesson_count, img, description]);
     }
 
     async updateCourse(id, name, lesson_count, img, description) {

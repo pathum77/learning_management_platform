@@ -48,10 +48,7 @@ class UserService {
 
     async enrollForCourse(userId, courseId) {        
         const [course] = await this.userModel.getCourseById(courseId);
-        const [user] = await this.userModel.getUserDataById(userId);
-
-        // console.log(course, user);
-        
+        const [user] = await this.userModel.getUserDataById(userId);        
 
         if (course.length === 0 || user.length === 0 || course.length === 0 && user.length === 0) {
             return { error: 'Course or user not found' };
@@ -78,6 +75,12 @@ class UserService {
 
     async getUserEnrolledCourses(id) {
         const [courses] = await this.userModel.getUserEnrolledCourses(id);
+
+        courses.forEach(course => {
+            course.isEnrolled = true;
+            course.img = `http://localhost:4000/public/uploads/courses/${course.img}`
+        });
+
         return courses;
     }
 };

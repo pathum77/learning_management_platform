@@ -6,6 +6,8 @@ WORKDIR /app
 
 COPY package*.json ./
 
+RUN npm install pinia --legacy-peer-deps
+
 RUN npm install
 
 COPY . .

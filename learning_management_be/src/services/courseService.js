@@ -1,23 +1,50 @@
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
+const config = require('../configs/app');
 
 class CourseService {
     constructor(userModel) {
         this.userModel = userModel;
     };
 
-    async getAllCourses() {
+    async getAllCourses(userId) {
+        
+        const [coursesEnrollment] = userId ? await this.userModel.getCourseByUserEnrolled(userId) : [];
         const [courses] = await this.userModel.getAllCourses();
+
+        courses.forEach(course => {
+            course.isEnrolled = userId ? coursesEnrollment.some(courseEnrollment => courseEnrollment.course_id === course.id) : false;
+            course.img = `http://localhost:4000/public/uploads/courses/${course.img}`
+        });
+
         return courses;
     };
 
     async getCourse(id) {
         const [course] = await this.userModel.getCourseById(id);
 
+        course[0].img = `http://localhost:4000/public/uploads/courses/${course.img}`
+
         if (course.length === 0) {
             return { error: 'Course not found!' };
         } else {
             return course;
         }
+    };
+
+    async getLatestCourses(userId) {
+             
+        const [courses] = await this.userModel.getLatestCourses();
+        const decodedUserId = userId !== 'null' ? await jwt.verify(userId, config.jwt_secret).userId : null;
+        
+        const [coursesEnrollment] = decodedUserId !== 'null' ? await this.userModel.getCourseByUserEnrolled(decodedUserId) : [];
+
+        courses.forEach(course => {
+            course.isEnrolled = coursesEnrollment.length > 0 ? coursesEnrollment.some(courseEnrollment => courseEnrollment.course_id === course.id) : false;
+            course.img = `http://localhost:4000/public/uploads/courses/${course.img}`
+        });
+
+        return courses;
     };
 
     async addCourse(data) {
@@ -39,7 +66,11 @@ class CourseService {
         }
     };
 
-    async updateCourse(data) {        
+    async updateCourse(data) {    
+        data.name = data.name === 'null' ? null : data.name;
+        data.lesson_count = data.lesson_count === 'null' ? null : data.lesson_count;
+        data.description = data.description === 'null' ? null : data.description;
+
         if(!data.id) {
             return { error: 'Course not found!' };
         } else {
@@ -56,14 +87,12 @@ class CourseService {
                     return { error: 'No data to update!' };
                 } else {
                     const filePath = 'public/uploads/courses/';
+                    if (data.img) {
+                        const [course] = await this.userModel.getCourseById(data.id);
+                        fs.unlinkSync(filePath + course[0].img);
+                    }
                     try {
                         await this.userModel.updateCourse(data.id, name, lesson_count, data.img, description);
-
-                        if (data.img) {
-                            const [course] = await this.userModel.getCourseById(data.id);
-                            fs.unlinkSync(filePath + course[0].img);
-                        }
-            
                         return { error: null };
                     } catch (error) {
                         if (data.img) {
